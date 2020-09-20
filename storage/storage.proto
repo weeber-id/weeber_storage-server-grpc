@@ -1,0 +1,17 @@
+syntax = "proto3";
+package storage;
+
+option go_package = "github.com/weeber-id/weeber_storage-server-grpc/storage";
+
+message File {
+  string filename = 1;
+}
+
+message FilePublicInformation {
+  string filename = 1;
+  string url = 2;
+}
+
+service publicStorage {
+  rpc Upload (File) returns (FilePublicInformation) {}
+}
