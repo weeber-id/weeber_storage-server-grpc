@@ -4,23 +4,30 @@ import (
 	"log"
 	"net"
 
+	"github.com/weeber-id/weeber_storage-server-grpc/lib/controller"
+	"github.com/weeber-id/weeber_storage-server-grpc/lib/services"
 	"github.com/weeber-id/weeber_storage-server-grpc/storage"
+	"github.com/weeber-id/weeber_storage-server-grpc/variable"
 	"google.golang.org/grpc"
 )
 
 func main() {
-	lis, err := net.Listen("tcp", ":9000")
+	variable.Initialization()
+	services.MinioInitialization()
+
+	addr := "localhost:3000"
+	lis, err := net.Listen("tcp", addr)
 	if err != nil {
 		log.Fatalf("Failed to listen: %v", err)
 	}
 
 	grpcServer := grpc.NewServer()
-	s := storage.Server{}
+	s := controller.Server{}
 	storage.RegisterPublicStorageServer(grpcServer, &s)
 
-	log.Println("Starting GRPC Weeber Storage Server")
+	log.Printf("Starting GRPC Weeber Storage Server on %s", addr)
 
 	if err := grpcServer.Serve(lis); err != nil {
-		log.Fatalf("Failed GRPC listen in port 9000: %v", err)
+		log.Fatalf("Failed GRPC listen in %s: %v", addr, err)
 	}
 }
