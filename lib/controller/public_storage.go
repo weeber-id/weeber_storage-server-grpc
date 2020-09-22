@@ -10,16 +10,16 @@ import (
 	"github.com/minio/minio-go/v7"
 	"github.com/weeber-id/weeber_storage-server-grpc/lib/file"
 	"github.com/weeber-id/weeber_storage-server-grpc/lib/services"
-	pbs "github.com/weeber-id/weeber_storage-server-grpc/storage"
+	pbs "github.com/weeber-id/weeber_storage-server-grpc/protobuf/v1/PublicStorage"
 )
 
-// Server Struct
-type Server struct{}
+// PublicStorageServer Struct
+type PublicStorageServer struct{}
 
 // Upload object to Minio Server
-func (s *Server) Upload(ctx context.Context, input *pbs.File) (*pbs.FileURL, error) {
+func (s *PublicStorageServer) Upload(ctx context.Context, input *pbs.File) (*pbs.FileURL, error) {
 	var obj file.MinioObj
-	obj.FromFile(input)
+	obj.FromPublicFile(input)
 
 	info, err := services.MinioClient.PutObject(context.Background(), "public", obj.ObjectName, bytes.NewReader(obj.File), -1, minio.PutObjectOptions{ContentType: obj.Option.ContentType})
 	if err != nil {
@@ -33,7 +33,7 @@ func (s *Server) Upload(ctx context.Context, input *pbs.File) (*pbs.FileURL, err
 }
 
 // Delete object from server
-func (s *Server) Delete(ctx context.Context, url *pbs.FileURL) (*emptypb.Empty, error) {
+func (s *PublicStorageServer) Delete(ctx context.Context, url *pbs.FileURL) (*emptypb.Empty, error) {
 	var obj file.MinioObj
 	if err := obj.FromURL(url.Url); err != nil {
 		return nil, err

@@ -1,26 +1,25 @@
 syntax = "proto3";
 
 import "google/protobuf/empty.proto";
-package storage;
+package PublicStorage;
 
-option go_package = "github.com/weeber-id/weeber_storage-server-grpc/storage";
+option go_package = "github.com/weeber-id/weeber_storage-server-grpc/protobuf/v1/PublicStorage";
 
 message File {
   string projectname = 1;
   string objectname = 2;
-  string contentType = 3;
   message Option {
     string contentType = 1;
   }
-  Option option = 4;
-  bytes file = 5;
+  Option option = 3;
+  bytes file = 4;
 }
 
 message FileURL {
   string url = 2;
 }
 
-service publicStorage {
+service PublicStorage {
   rpc Upload (File) returns (FileURL);
   rpc Delete (FileURL) returns (google.protobuf.Empty);
 }

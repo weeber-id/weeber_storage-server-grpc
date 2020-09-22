@@ -6,7 +6,8 @@ import (
 
 	"github.com/weeber-id/weeber_storage-server-grpc/lib/controller"
 	"github.com/weeber-id/weeber_storage-server-grpc/lib/services"
-	"github.com/weeber-id/weeber_storage-server-grpc/storage"
+	prbs "github.com/weeber-id/weeber_storage-server-grpc/protobuf/v1/PrivateStorage"
+	pbs "github.com/weeber-id/weeber_storage-server-grpc/protobuf/v1/PublicStorage"
 	"github.com/weeber-id/weeber_storage-server-grpc/variable"
 	"google.golang.org/grpc"
 )
@@ -22,8 +23,12 @@ func main() {
 	}
 
 	grpcServer := grpc.NewServer()
-	s := controller.Server{}
-	storage.RegisterPublicStorageServer(grpcServer, &s)
+
+	publicStorageCtl := controller.PublicStorageServer{}
+	pbs.RegisterPublicStorageServer(grpcServer, &publicStorageCtl)
+
+	privateStorageCtl := controller.PrivateStorageServer{}
+	prbs.RegisterPrivateStorageServer(grpcServer, &privateStorageCtl)
 
 	log.Printf("Starting GRPC Weeber Storage Server on %s", addr)
 
